@@ -20,11 +20,12 @@ build: off
 
 install:
   - ps: Install-Product node $env:nodejs_version
-  - yarn
+  - npm i
+  - npm audit # run audit to prevent adding vulnerable dependencies
 
 test_script:
-  - yarn run build
-  - yarn run check:qunit
+  - npm run build
+  - npm run check:qunit
 
 notifications:
   - provider: Email
