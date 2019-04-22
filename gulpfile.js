@@ -6,10 +6,12 @@ const stylelint = require('gulp-stylelint')
 const babel = require('rollup-plugin-babel')
 const json = require('rollup-plugin-json')
 const merge = require('merge2')
+const sass = require('sass')
 const browserSync = require('browser-sync').create()
 const packageJson = require('./package.json')
 const execute = require('./utils/execute')
 const log = require('fancy-log')
+const fs = require('fs')
 const version = process.env.VERSION || packageJson.version
 const fsPromises = require('fs').promises
 
@@ -80,8 +82,10 @@ if (typeof window !== 'undefined' && window.Sweetalert2){\
 })
 
 gulp.task('build:styles', () => {
-  return gulp.src('src/sweetalert2.scss')
-    .pipe($.sass())
+  const result = sass.renderSync({ file: 'src/sweetalert2.scss' })
+  fs.writeFileSync('dist/sweetalert2.css', result.css)
+
+  return gulp.src('dist/sweetalert2.css')
     .pipe($.autoprefixer())
     .pipe(gulp.dest('dist'))
     .pipe($.if(!skipMinification, $.cleanCss()))
